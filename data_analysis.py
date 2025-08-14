@@ -2,13 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-
 df = pd.read_csv("waze_dataset.csv")
-
 
 df.columns = df.columns.str.strip()
 df = df.drop_duplicates()
-
 
 plt.figure()
 df['sessions'].dropna().hist(bins=30)
@@ -26,10 +23,9 @@ plt.ylabel("Users")
 plt.savefig("hist_activity_days.png")
 plt.close()
 
-
 plt.figure()
-sns.boxplot(x=df['drives'].dropna(), showfliers=False)  
-sns.stripplot(x=df['drives'].dropna(), color="red", alpha=0.3)  
+sns.boxplot(x=df['drives'].dropna(), showfliers=False)
+sns.stripplot(x=df['drives'].dropna(), color="red", alpha=0.3)
 plt.title("Box Plot: Drives (No Outliers Shown)")
 plt.savefig("box_drives.png")
 plt.close()
@@ -41,7 +37,6 @@ plt.title("Box Plot: Distance by Label (No Outliers Shown)")
 plt.savefig("box_distance_by_label.png")
 plt.close()
 
-
 plt.figure()
 df.groupby(["device", "label"]).size().unstack(fill_value=0).plot(kind="bar")
 plt.title("Bar Chart: Users by Device & Label")
@@ -49,7 +44,6 @@ plt.ylabel("Users")
 plt.tight_layout()
 plt.savefig("bar_device_label.png")
 plt.close()
-
 
 plt.figure()
 sns.scatterplot(data=df, x="drives", y="sessions", hue="label", alpha=0.6)
@@ -63,17 +57,16 @@ plt.title("Scatter: Distance vs Duration")
 plt.savefig("scatter_distance_duration.png")
 plt.close()
 
-
-plt.figure()
+df['label'] = df['label'].fillna("")
 df['is_churn'] = df['label'].str.contains("churn", case=False).astype(int)
 churn_rate = df.groupby("driving_days")['is_churn'].mean().reset_index()
+plt.figure()
 plt.plot(churn_rate["driving_days"], churn_rate["is_churn"])
 plt.title("Line Graph: Churn Rate by Driving Days")
 plt.xlabel("Driving Days")
 plt.ylabel("Churn Rate")
 plt.savefig("line_churn_by_driving_days.png")
 plt.close()
-
 
 numeric_cols = df.select_dtypes(include='number')
 plt.figure(figsize=(10, 8))
